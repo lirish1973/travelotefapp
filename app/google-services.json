@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "823659501474",
+    "project_id": "travelotef-74cb8",
+    "storage_bucket": "travelotef-74cb8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:823659501474:android:d31f732043fb249b7004fb",
+        "android_client_info": {
+          "package_name": "travelotef_tryit.co.il"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCeoYknUYhsWoGEluAJPJWeumvN81tJKz0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
