@@ -7,6 +7,25 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:823659501474:android:24a765a8214131527004fb",
+        "android_client_info": {
+          "package_name": "com.example.travelotefapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCeoYknUYhsWoGEluAJPJWeumvN81tJKz0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:823659501474:android:d31f732043fb249b7004fb",
         "android_client_info": {
           "package_name": "travelotef_tryit.co.il"
