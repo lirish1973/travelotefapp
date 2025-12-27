@@ -1,0 +1,52 @@
+<resources>
+    <string name="app_name">Travelotef</string>
+    <string name="app_name_hebrew">סיורים בעוטף</string>
+    
+    <!-- Splash Screen -->
+    <string name="splash_tagline">המורה דרך הוירטואלי שלך</string>
+    <string name="splash_tagline_en">Your Virtual Tour Guide</string>
+    
+    <!-- Authentication -->
+    <string name="login">התחברות</string>
+    <string name="register">הרשמה</string>
+    <string name="email">אימייל</string>
+    <string name="password">סיסמה</string>
+    <string name="forgot_password">שכחתי סיסמה</string>
+    <string name="login_with_google">התחבר עם Google</string>
+    
+    <!-- Home Screen -->
+    <string name="home_title">סיורים זמינים</string>
+    <string name="search_tours">חפש סיורים</string>
+    <string name="featured_tours">סיורים מומלצים</string>
+    
+    <!-- Tour Details -->
+    <string name="tour_details">פרטי סיור</string>
+    <string name="price">מחיר</string>
+    <string name="duration">משך</string>
+    <string name="purchase_tour">רכוש סיור</string>
+    <string name="start_tour">התחל סיור</string>
+    
+    <!-- My Tours -->
+    <string name="my_tours">הסיורים שלי</string>
+    <string name="no_tours_yet">עדיין לא רכשת סיורים</string>
+    
+    <!-- Virtual Guide -->
+    <string name="guide_title">מורה דרך וירטואלי</string>
+    <string name="next_location">המיקום הבא</string>
+    <string name="previous_location">המיקום הקודם</string>
+    <string name="view_on_map">הצג במפה</string>
+    <string name="play_video">נגן וידאו</string>
+    
+    <!-- Profile -->
+    <string name="profile">פרופיל</string>
+    <string name="settings">הגדרות</string>
+    <string name="logout">התנתק</string>
+    
+    <!-- Common -->
+    <string name="ok">אישור</string>
+    <string name="cancel">ביטול</string>
+    <string name="save">שמור</string>
+    <string name="loading">טוען...</string>
+    <string name="error">שגיאה</string>
+    <string name="retry">נסה שוב</string>
+</resources>
