@@ -8,14 +8,14 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx. fragment.app.viewModels
-import androidx.recyclerview.widget. LinearLayoutManager
+import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.travelotefapp.R
 import com.example.travelotefapp.data.model.Category
 import com.example.travelotefapp.ui.adapters.CategoryAdapter
 import com.example.travelotefapp.ui.adapters.TourAdapter
-import com.example.travelotefapp.ui.tourdetail.TourDetailFragment  // ← הוסף
+import com.example.travelotefapp.ui.tourdetails.TourDetailFragment
 
 class HomeFragment : Fragment() {
 
@@ -34,10 +34,10 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle? 
     ): View? {
-        return inflater.inflate(R. layout.fragment_home, container, false)
+        return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
-    override fun onViewCreated(view:  View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
         initViews(view)
@@ -48,9 +48,9 @@ class HomeFragment : Fragment() {
     }
 
     private fun initViews(view: View) {
-        rvCategories = view.findViewById(R.id. rvCategories)
+        rvCategories = view.findViewById(R.id.rvCategories)
         rvTours = view.findViewById(R.id.rvTours)
-        searchView = view. findViewById(R.id.searchView)
+        searchView = view.findViewById(R.id.searchView)
     }
 
     private fun setupCategories() {
@@ -67,12 +67,12 @@ class HomeFragment : Fragment() {
             if (category.name == "הכל") {
                 viewModel.loadTours()
             } else {
-                viewModel. filterByCategory(category.name)
+                viewModel.filterByCategory(category.name)
             }
-            Toast.makeText(context, "נבחרה קטגוריה: ${category.name}", Toast. LENGTH_SHORT).show()
+            Toast.makeText(context, "נבחרה קטגוריה: ${category.name}", Toast.LENGTH_SHORT).show()
         }
 
-        rvCategories. apply {
+        rvCategories.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = categoryAdapter
         }
@@ -87,7 +87,7 @@ class HomeFragment : Fragment() {
                 requireActivity().supportFragmentManager.beginTransaction()
                     .replace(android.R.id.content, fragment)
                     .addToBackStack(null)
-                    . commit()
+                    .commit()
             },
             onFavoriteClick = { tour ->
                 viewModel.toggleFavorite(tour)
@@ -106,7 +106,7 @@ class HomeFragment : Fragment() {
                 return false
             }
 
-            override fun onQueryTextChange(newText:  String?): Boolean {
+            override fun onQueryTextChange(newText: String?): Boolean {
                 viewModel.searchTours(newText ?: "")
                 return true
             }
@@ -119,7 +119,7 @@ class HomeFragment : Fragment() {
         }
 
         viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
-            // progressBar. visibility = if (isLoading) View.VISIBLE else View. GONE
+            // progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
 
         viewModel.error.observe(viewLifecycleOwner) { error ->
