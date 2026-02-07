@@ -30,4 +30,7 @@
     <!-- Gradient Colors for Splash -->
     <color name="gradient_start">#1976D2</color>
     <color name="gradient_end">#64B5F6</color>
+    
+    <!-- Launcher Icon Colors -->
+    <color name="ic_launcher_background">#1976D2</color>
 </resources>

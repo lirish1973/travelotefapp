@@ -1,0 +1,19 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+  <!-- Simple travel-themed icon: location pin / map marker -->
+  <group
+      android:translateX="54"
+      android:translateY="54">
+    <!-- Location pin outline -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M0,-24C-9.9,-24 -18,15.9 -18,-6C-18,-15.9 -9.9,-24 0,-24C9.9,-24 18,-15.9 18,-6C18,3 12,18 0,24C-12,18 -18,3 -18,-6z"/>
+    <!-- Inner circle -->
+    <path
+        android:fillColor="#64B5F6"
+        android:pathData="M0,-18C-6.6,-18 -12,-12.6 -12,-6C-12,0.6 -6.6,6 0,6C6.6,6 12,0.6 12,-6C12,-12.6 6.6,-18 0,-18z"/>
+  </group>
+</vector>
