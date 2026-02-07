@@ -41,6 +41,12 @@ cd travelotefapp
 1. **Authentication**:
    - Go to Authentication → Sign-in method
    - Enable Email/Password
+   - Enable Google Sign-In:
+     * Click on "Google" in the sign-in providers list
+     * Toggle the "Enable" switch
+     * Select a support email
+     * Click "Save"
+   - **Important**: After enabling Google Sign-In, download the updated `google-services.json` file and replace the existing one in the `app/` directory
    
 2. **Firestore Database**:
    - Go to Firestore Database

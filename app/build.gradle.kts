@@ -71,6 +71,9 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("com.google.firebase:firebase-storage-ktx")
     
+    // Google Play Services Auth (for Google Sign-In)
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
+    
     // Hilt for Dependency Injection
     implementation("com.google.dagger:hilt-android:2.51.1")
     ksp("com.google.dagger:hilt-compiler:2.51.1")
