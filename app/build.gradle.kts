@@ -3,8 +3,8 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
     id("com.google.devtools.ksp") version "2.1.0-1.0.29"
-    id("com.google.dagger.hilt.android")
-    kotlin("kapt")
+    id("com.google.dagger.hilt.android") version "2.51.1"
+    id("org.jetbrains.kotlin.kapt")
 }
 
 android {
@@ -51,7 +51,8 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.constraintlayout:constraintlayout:2.2.0")
-    
+
+
     // Lifecycle
     val lifecycleVersion = "2.8.7"
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
@@ -72,7 +73,7 @@ dependencies {
     
     // Hilt for Dependency Injection
     implementation("com.google.dagger:hilt-android:2.51.1")
-    kapt("com.google.dagger:hilt-compiler:2.51.1")
+    ksp("com.google.dagger:hilt-compiler:2.51.1")
     
     // Room Database
     val roomVersion = "2.6.1"
@@ -111,6 +112,10 @@ dependencies {
     testImplementation("androidx.arch.core:core-testing:2.2.0")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-    androidTestImplementation("com.google.dagger:hilt-android-testing:2.51.1")
+    kspAndroidTest("com.google.dagger:hilt-compiler:2.51.1")
     kaptAndroidTest("com.google.dagger:hilt-compiler:2.51.1")
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    kspAndroidTest("com.google.dagger:hilt-compiler:2.51.1") // Using KSP
+    kaptAndroidTest("com.google.dagger:hilt-compiler:2.51.1") // Using KAPT
 }
