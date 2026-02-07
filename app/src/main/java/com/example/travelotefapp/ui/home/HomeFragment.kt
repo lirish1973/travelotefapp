@@ -15,7 +15,7 @@ import com.example.travelotefapp.R
 import com.example.travelotefapp.data.model.Category
 import com.example.travelotefapp.ui.adapters.CategoryAdapter
 import com.example.travelotefapp.ui.adapters.TourAdapter
-import com.example.travelotefapp.ui.tourdetail.TourDetailFragment  // ← הוסף
+import com.example.travelotefapp.ui.TourDetails.TourDetailFragment
 
 class HomeFragment : Fragment() {
 

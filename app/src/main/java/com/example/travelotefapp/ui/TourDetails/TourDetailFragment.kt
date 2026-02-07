@@ -1,4 +1,4 @@
-package com.example.travelotefapp.ui.tourdetail
+package com.example.travelotefapp.ui.TourDetails
 
 import android.os.Bundle
 import android.view.LayoutInflater
