@@ -132,9 +132,24 @@ cd travelotefapp
 ## 🔥 הגדרת Firebase
 
 ### 1. Authentication
-```kotlin
-// אפשר Email/Password authentication בקונסול
-```
+
+#### הגדרת Email/Password Authentication
+1. פתח את [Firebase Console](https://console.firebase.google.com)
+2. בחר את הפרויקט שלך
+3. עבור אל **Authentication** > **Sign-in method**
+4. אפשר את **Email/Password** provider
+
+#### הגדרת Google Sign-In
+1. עבור אל **Authentication** > **Sign-in method**
+2. אפשר את **Google** provider
+3. הגדר את Support Email
+4. לחץ על **Save**
+
+**חשוב:** לאחר הגדרת Google Sign-In ב-Firebase Console, הורד מחדש את קובץ `google-services.json` והעתק אותו לתיקיית `app/`. הקובץ המעודכן יכלול את OAuth 2.0 client ID הנדרש ל-Google Sign-In.
+
+**הערה:** אם השדה `default_web_client_id` בקובץ `strings.xml` מכיל `YOUR_WEB_CLIENT_ID_HERE`, עליך:
+1. להוריד מחדש את `google-services.json` לאחר הגדרת Google Sign-In ב-Firebase Console
+2. לבנות מחדש את הפרויקט - הקובץ `default_web_client_id` ייווצר אוטומטית מתוך `google-services.json`
 
 ### 2. Firestore Database
 ```javascript
