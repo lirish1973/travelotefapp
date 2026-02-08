@@ -36,6 +36,9 @@ cd travelotefapp
 2. Package name: `com.example.travelotefapp`
 3. Download `google-services.json`
 4. Place it in `app/` directory
+   - **Note**: A template file `google-services.json.template` is provided in the `app/` directory
+   - Copy your downloaded file as `google-services.json` (without .template)
+   - The actual `google-services.json` file is ignored by Git for security
 
 #### C. Enable Firebase Services
 1. **Authentication**:
@@ -140,8 +143,11 @@ rm -rf ~/.gradle/caches/
 ### Build Errors
 
 #### "google-services.json not found"
-- Make sure you downloaded `google-services.json` from Firebase
-- Place it in `app/` directory (same level as `build.gradle.kts`)
+- Make sure you downloaded `google-services.json` from Firebase Console
+- A template file `google-services.json.template` is provided in the `app/` directory
+- Place your actual file in `app/` directory (same level as `build.gradle.kts`)
+- Rename it to `google-services.json` (without .template extension)
+- **Note**: The actual `google-services.json` file is not committed to Git for security reasons
 
 #### "SDK location not found"
 Create `local.properties` file in project root:
