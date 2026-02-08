@@ -35,7 +35,7 @@ Your downloaded `google-services.json` should have this structure:
   "project_info": {
     "project_number": "YOUR_PROJECT_NUMBER",
     "project_id": "YOUR_PROJECT_ID",
-    "storage_bucket": "YOUR_PROJECT_ID.appspot.com"
+    "storage_bucket": "YOUR_PROJECT_ID.firebasestorage.app"
   },
   "client": [
     {

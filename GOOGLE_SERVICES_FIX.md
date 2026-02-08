@@ -115,7 +115,7 @@ ls -la app/google-services.json
 
 # 3. Confirm .gitignore is working
 git check-ignore -v app/google-services.json
-# Output: .gitignore:66:google-services.json    app/google-services.json
+# Output: .gitignore:<line>:google-services.json    app/google-services.json
 
 # 4. Confirm modifications are ignored
 echo "test" >> app/google-services.json
