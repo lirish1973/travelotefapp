@@ -126,6 +126,8 @@ cd travelotefapp
    - העתק אותו לתיקייה `app/` (ללא סיומת .template)
    - **הערה**: קובץ התבנית `google-services.json.template` מסופק לדוגמה
    - הקובץ האמיתי `google-services.json` לא מתעדכן ב-Git מסיבות אבטחה
+   - **חשוב**: וודא שהחבילה ב-Firebase היא `com.travelotef.app`
+   - **אימות**: הרץ `./scripts/validate-google-services.sh` לבדיקת התצורה
 
 4. Sync Gradle ובנה את הפרויקט
 
@@ -299,6 +301,32 @@ implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 ## 📧 יצירת קשר
 
 לשאלות ובעיות: [פתח Issue](https://github.com/lirish1973/travelotefapp/issues)
+
+## 🔧 פתרון בעיות
+
+### בעיות הגדרת Firebase
+
+#### שגיאה: "No matching client found for package name"
+אם אתה מקבל שגיאה זו בזמן הבנייה:
+```
+Execution failed for task ':app:processDebugGoogleServices'.
+> No matching client found for package name 'com.travelotef.app'
+```
+
+**פתרון:**
+1. וודא שקובץ `google-services.json` קיים בתיקיית `app/`
+2. הרץ את סקריפט האימות: `./scripts/validate-google-services.sh`
+3. וודא שהחבילה ב-Firebase Console היא: `com.travelotef.app`
+4. ראה מדריך מפורט: [TROUBLESHOOTING_GOOGLE_SERVICES.md](TROUBLESHOOTING_GOOGLE_SERVICES.md)
+5. ראה תיקון מלא: [GOOGLE_SERVICES_CLIENT_FIX.md](GOOGLE_SERVICES_CLIENT_FIX.md)
+
+#### בעיות סנכרון Gradle
+```bash
+./gradlew clean
+./gradlew build --refresh-dependencies
+```
+
+למידע נוסף ראה [BUILD_GUIDE.md](BUILD_GUIDE.md)
 
 ## 🙏 תודות
 
