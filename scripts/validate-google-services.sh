@@ -42,25 +42,38 @@ echo -e "${GREEN}✓ Valid JSON format${NC}"
 
 # Check for required package name
 EXPECTED_PACKAGE="com.travelotef.app"
+PACKAGE_FOUND=false
 
 # Try with jq first
 if command -v jq &> /dev/null; then
-    PACKAGE_NAME=$(jq -r '.client[0].client_info.android_client_info.package_name' app/google-services.json 2>/dev/null)
+    # Check all client entries for matching package name
+    CLIENT_COUNT=$(jq '.client | length' app/google-services.json 2>/dev/null)
+    for ((i=0; i<CLIENT_COUNT; i++)); do
+        PACKAGE_NAME=$(jq -r ".client[$i].client_info.android_client_info.package_name" app/google-services.json 2>/dev/null)
+        if [ "$PACKAGE_NAME" = "$EXPECTED_PACKAGE" ]; then
+            PACKAGE_FOUND=true
+            CLIENT_INDEX=$i
+            break
+        fi
+    done
 else
-    # Fallback to grep/sed
-    PACKAGE_NAME=$(grep -o '"package_name"[[:space:]]*:[[:space:]]*"[^"]*"' app/google-services.json | head -1 | sed 's/.*"\([^"]*\)".*/\1/')
+    # Fallback to grep/sed - check if expected package exists anywhere
+    if grep -q "\"package_name\"[[:space:]]*:[[:space:]]*\"$EXPECTED_PACKAGE\"" app/google-services.json; then
+        PACKAGE_FOUND=true
+    fi
 fi
 
-if [ -z "$PACKAGE_NAME" ]; then
-    echo -e "${RED}ERROR: Could not find package_name in google-services.json${NC}"
-    echo "Please ensure your google-services.json has the correct structure."
-    exit 1
-fi
-
-if [ "$PACKAGE_NAME" != "$EXPECTED_PACKAGE" ]; then
-    echo -e "${RED}ERROR: Package name mismatch!${NC}"
-    echo "Expected: $EXPECTED_PACKAGE"
-    echo "Found:    $PACKAGE_NAME"
+if [ "$PACKAGE_FOUND" = false ]; then
+    echo -e "${RED}ERROR: Package name not found in google-services.json${NC}"
+    echo "Expected package name: $EXPECTED_PACKAGE"
+    echo ""
+    # Show what packages were found
+    if command -v jq &> /dev/null; then
+        FOUND_PACKAGES=$(jq -r '.client[].client_info.android_client_info.package_name' app/google-services.json 2>/dev/null | paste -sd "," -)
+        if [ -n "$FOUND_PACKAGES" ]; then
+            echo "Found packages: $FOUND_PACKAGES"
+        fi
+    fi
     echo ""
     echo "To fix this:"
     echo "1. Go to Firebase Console"
@@ -83,7 +96,14 @@ echo -e "${GREEN}✓ No placeholder values detected${NC}"
 
 # Check for oauth_client (required for Google Sign-In)
 if command -v jq &> /dev/null; then
-    OAUTH_CLIENTS=$(jq '.client[0].oauth_client | length' app/google-services.json 2>/dev/null)
+    # Check OAuth clients in the matching client entry
+    if [ -n "$CLIENT_INDEX" ]; then
+        OAUTH_CLIENTS=$(jq ".client[$CLIENT_INDEX].oauth_client | length" app/google-services.json 2>/dev/null)
+    else
+        # If CLIENT_INDEX not set (jq not available before), check first client
+        OAUTH_CLIENTS=$(jq '.client[0].oauth_client | length' app/google-services.json 2>/dev/null)
+    fi
+    
     if [ "$OAUTH_CLIENTS" = "0" ] || [ "$OAUTH_CLIENTS" = "null" ]; then
         echo -e "${YELLOW}WARNING: No OAuth clients configured${NC}"
         echo "If you're using Google Sign-In, you need to:"
