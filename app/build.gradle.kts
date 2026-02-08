@@ -3,8 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
     id("com.google.devtools.ksp") version "2.1.0-1.0.29"
-    id("com.google.dagger.hilt.android") version "2.51.1"
-    id("org.jetbrains.kotlin.kapt")
+    id("com.google.dagger.hilt.android") version "2.57.1"
 }
 
 android {
@@ -75,8 +74,8 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:21.2.0")
     
     // Hilt for Dependency Injection
-    implementation("com.google.dagger:hilt-android:2.51.1")
-    ksp("com.google.dagger:hilt-compiler:2.51.1")
+    implementation("com.google.dagger:hilt-android:2.57.1")
+    ksp("com.google.dagger:hilt-compiler:2.57.1")
     
     // Hilt WorkManager integration
     implementation("androidx.hilt:hilt-work:1.2.0")
@@ -119,10 +118,4 @@ dependencies {
     testImplementation("androidx.arch.core:core-testing:2.2.0")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-    kspAndroidTest("com.google.dagger:hilt-compiler:2.51.1")
-    kaptAndroidTest("com.google.dagger:hilt-compiler:2.51.1")
-    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-    kspAndroidTest("com.google.dagger:hilt-compiler:2.51.1") // Using KSP
-    kaptAndroidTest("com.google.dagger:hilt-compiler:2.51.1") // Using KAPT
 }
