@@ -73,5 +73,9 @@ Your downloaded `google-services.json` should have this structure:
 - Verify the package name in Firebase Console matches `com.travelotef.app`
 - Re-download the file after updating the package name
 
+### "No matching client found" error
+- See [TROUBLESHOOTING_GOOGLE_SERVICES.md](../TROUBLESHOOTING_GOOGLE_SERVICES.md) for detailed solutions
+- Run validation script: `./scripts/validate-google-services.sh`
+
 ### Need help?
 See the main project README.md or BUILD_GUIDE.md for detailed setup instructions.
