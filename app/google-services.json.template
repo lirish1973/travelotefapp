@@ -1,18 +1,8 @@
 {
-  "_comment": "This is a template file. To use it:",
-  "_instructions": [
-    "1. Go to Firebase Console: https://console.firebase.google.com",
-    "2. Select your project (or create a new one)",
-    "3. Go to Project Settings > General",
-    "4. Under 'Your apps', find your Android app or add a new one",
-    "5. Download the google-services.json file",
-    "6. Copy it to this directory as 'google-services.json' (without .template)",
-    "7. The file will be automatically ignored by Git"
-  ],
   "project_info": {
     "project_number": "YOUR_PROJECT_NUMBER",
     "project_id": "YOUR_PROJECT_ID",
-    "storage_bucket": "YOUR_STORAGE_BUCKET"
+    "storage_bucket": "YOUR_PROJECT_ID.firebasestorage.app"
   },
   "client": [
     {

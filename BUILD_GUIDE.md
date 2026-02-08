@@ -33,12 +33,13 @@ cd travelotefapp
 
 #### B. Add Android App
 1. In Firebase Console, click "Add app" → Android icon
-2. Package name: `com.example.travelotefapp`
+2. Package name: `com.travelotef.app`
 3. Download `google-services.json`
 4. Place it in `app/` directory
    - **Note**: A template file `google-services.json.template` is provided in the `app/` directory
    - Copy your downloaded file as `google-services.json` (without .template)
    - The actual `google-services.json` file is ignored by Git for security
+   - See `app/README-google-services.md` for detailed instructions
 
 #### C. Enable Firebase Services
 1. **Authentication**:
