@@ -123,7 +123,9 @@ cd travelotefapp
 3. הגדר Firebase:
    - צור פרויקט חדש ב-[Firebase Console](https://console.firebase.google.com)
    - הורד את קובץ `google-services.json`
-   - העתק אותו לתיקייה `app/`
+   - העתק אותו לתיקייה `app/` (ללא סיומת .template)
+   - **הערה**: קובץ התבנית `google-services.json.template` מסופק לדוגמה
+   - הקובץ האמיתי `google-services.json` לא מתעדכן ב-Git מסיבות אבטחה
 
 4. Sync Gradle ובנה את הפרויקט
 
