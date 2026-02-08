@@ -48,6 +48,12 @@ PACKAGE_FOUND=false
 if command -v jq &> /dev/null; then
     # Check all client entries for matching package name
     CLIENT_COUNT=$(jq '.client | length' app/google-services.json 2>/dev/null)
+    
+    # Validate CLIENT_COUNT is a valid number
+    if [ -z "$CLIENT_COUNT" ] || [ "$CLIENT_COUNT" = "null" ]; then
+        CLIENT_COUNT=0
+    fi
+    
     for ((i=0; i<CLIENT_COUNT; i++)); do
         PACKAGE_NAME=$(jq -r ".client[$i].client_info.android_client_info.package_name" app/google-services.json 2>/dev/null)
         if [ "$PACKAGE_NAME" = "$EXPECTED_PACKAGE" ]; then
@@ -69,7 +75,7 @@ if [ "$PACKAGE_FOUND" = false ]; then
     echo ""
     # Show what packages were found
     if command -v jq &> /dev/null; then
-        FOUND_PACKAGES=$(jq -r '.client[].client_info.android_client_info.package_name' app/google-services.json 2>/dev/null | paste -sd "," -)
+        FOUND_PACKAGES=$(jq -r '.client[].client_info.android_client_info.package_name // empty' app/google-services.json 2>/dev/null | paste -sd "," -)
         if [ -n "$FOUND_PACKAGES" ]; then
             echo "Found packages: $FOUND_PACKAGES"
         fi
