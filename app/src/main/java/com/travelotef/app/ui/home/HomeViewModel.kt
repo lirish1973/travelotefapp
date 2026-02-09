@@ -1,82 +1,160 @@
 package com.travelotef.app.ui.home
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.travelotef.app.data.repository.TourRepository
+import com.travelotef.app.domain.model.Category
 import com.travelotef.app.domain.model.Tour
 import com.travelotef.app.utils.Resource
+import com.travelotef.app.utils.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
  * ViewModel for Home Screen
- * Manages tour data and UI state
+ * Manages tours, categories, search, and filter state
  */
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val tourRepository: TourRepository
 ) : ViewModel() {
-    
-    private val _tours = MutableLiveData<Resource<List<Tour>>>()
-    val tours: LiveData<Resource<List<Tour>>> = _tours
-    
-    private val _searchResults = MutableLiveData<Resource<List<Tour>>>()
-    val searchResults: LiveData<Resource<List<Tour>>> = _searchResults
-    
+
+    // Tours state
+    private val _toursState = MutableStateFlow<UiState<List<Tour>>>(UiState.Loading)
+    val toursState: StateFlow<UiState<List<Tour>>> = _toursState.asStateFlow()
+
+    // Categories state
+    private val _categoriesState = MutableStateFlow<UiState<List<Category>>>(UiState.Loading)
+    val categoriesState: StateFlow<UiState<List<Category>>> = _categoriesState.asStateFlow()
+
+    // Selected category filter
+    private val _selectedCategory = MutableStateFlow<Int?>(null)
+    val selectedCategory: StateFlow<Int?> = _selectedCategory.asStateFlow()
+
+    // Search query
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
+
+    // Refresh state
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
+
+    private var searchJob: Job? = null
+
     init {
         loadTours()
+        loadCategories()
     }
-    
+
     /**
-     * Load all tours
+     * Load tours, optionally filtered by category
      */
-    fun loadTours(forceRefresh: Boolean = false) {
+    fun loadTours(categoryId: Int? = _selectedCategory.value) {
         viewModelScope.launch {
-            tourRepository.getAllTours(forceRefresh).collectLatest { resource ->
-                _tours.value = resource
+            tourRepository.getTours(categoryId).collect { resource ->
+                when (resource) {
+                    is Resource.Loading -> _toursState.value = UiState.Loading
+                    is Resource.Success -> {
+                        val tours = resource.data ?: emptyList()
+                        _toursState.value = if (tours.isEmpty()) UiState.Empty else UiState.Success(tours)
+                    }
+                    is Resource.Error -> {
+                        _toursState.value = UiState.Error(resource.message ?: "שגיאה בטעינה")
+                    }
+                }
             }
         }
     }
-    
+
     /**
-     * Search tours by keyword
+     * Load categories from API/cache
+     */
+    fun loadCategories() {
+        viewModelScope.launch {
+            tourRepository.getCategories().collect { resource ->
+                when (resource) {
+                    is Resource.Loading -> { /* Keep current state */ }
+                    is Resource.Success -> {
+                        val categories = resource.data ?: emptyList()
+                        // Add "All" as first category
+                        val allCategory = Category(id = -1, name = "הכל", slug = "all")
+                        _categoriesState.value = UiState.Success(listOf(allCategory) + categories)
+                    }
+                    is Resource.Error -> {
+                        _categoriesState.value = UiState.Error(resource.message ?: "שגיאה")
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Select a category filter
+     */
+    fun selectCategory(categoryId: Int?) {
+        _selectedCategory.value = categoryId
+        _searchQuery.value = ""
+        loadTours(categoryId)
+    }
+
+    /**
+     * Search tours with debounce
      */
     fun searchTours(query: String) {
+        _searchQuery.value = query
+        searchJob?.cancel()
+
         if (query.isBlank()) {
-            _searchResults.value = _tours.value
+            loadTours()
             return
         }
-        
-        viewModelScope.launch {
-            tourRepository.searchTours(query).collectLatest { resource ->
-                _searchResults.value = resource
+
+        searchJob = viewModelScope.launch {
+            delay(300) // Debounce
+            tourRepository.searchTours(query).collect { resource ->
+                when (resource) {
+                    is Resource.Loading -> _toursState.value = UiState.Loading
+                    is Resource.Success -> {
+                        val tours = resource.data ?: emptyList()
+                        _toursState.value = if (tours.isEmpty()) UiState.Empty else UiState.Success(tours)
+                    }
+                    is Resource.Error -> {
+                        _toursState.value = UiState.Error(resource.message ?: "שגיאה בחיפוש")
+                    }
+                }
             }
         }
     }
-    
+
     /**
-     * Sync tours from remote API
+     * Toggle favorite for a tour
      */
-    fun syncTours() {
+    fun toggleFavorite(tour: Tour) {
         viewModelScope.launch {
-            _tours.value = Resource.Loading()
-            val result = tourRepository.syncTours()
-            if (result is Resource.Success) {
-                loadTours(forceRefresh = true)
-            } else if (result is Resource.Error) {
-                _tours.value = Resource.Error(result.message ?: "Sync failed")
+            tourRepository.toggleFavorite(tour.id)
+            // Reload to update UI
+            if (_searchQuery.value.isNotBlank()) {
+                searchTours(_searchQuery.value)
+            } else {
+                loadTours()
             }
         }
     }
-    
+
     /**
-     * Refresh tours (pull to refresh)
+     * Pull to refresh
      */
-    fun refreshTours() {
-        syncTours()
+    fun refresh() {
+        viewModelScope.launch {
+            _isRefreshing.value = true
+            tourRepository.refreshAll()
+            loadTours()
+            loadCategories()
+            _isRefreshing.value = false
+        }
     }
 }

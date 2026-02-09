@@ -1,88 +1,55 @@
 package com.travelotef.app.domain.model
 
-import java.util.Date
-
 /**
- * Domain model representing a Tour
+ * Domain model representing a Tour (product from TryIt.co.il)
  */
 data class Tour(
-    val id: String,
-    val title: String,
-    val description: String,
-    val price: Double,
-    val duration: String,
-    val coverImageUrl: String,
-    val category: String,
-    val locations: List<Location>,
-    val difficulty: TourDifficulty,
-    val rating: Double,
-    val reviewsCount: Int,
-    val isAvailable: Boolean,
-    val createdAt: Date,
-    val updatedAt: Date
-)
-
-/**
- * Difficulty levels for tours
- */
-enum class TourDifficulty {
-    EASY,
-    MODERATE,
-    CHALLENGING,
-    EXTREME
-}
-
-/**
- * Domain model representing a Location/Point of Interest
- */
-data class Location(
-    val id: String,
+    val id: Int,
     val name: String,
+    val permalink: String,
+    val shortDescription: String,
     val description: String,
-    val latitude: Double,
-    val longitude: Double,
-    val videoUrl: String?,
-    val images: List<String>,
-    val story: String,
-    val links: List<Link>,
-    val order: Int,
-    val estimatedDuration: Int // in minutes
-)
+    val price: String,
+    val regularPrice: String,
+    val isOnSale: Boolean,
+    val currencySymbol: String,
+    val thumbnailUrl: String,
+    val imageUrls: List<String>,
+    val categories: List<Category>,
+    val isInStock: Boolean,
+    val isPurchasable: Boolean,
+    val averageRating: Float,
+    val reviewCount: Int,
+    val isFavorite: Boolean = false
+) {
+    /**
+     * Formatted price string with currency symbol
+     */
+    val formattedPrice: String
+        get() {
+            val priceNum = price.toDoubleOrNull()
+            return if (priceNum != null) {
+                "$currencySymbol${priceNum.toInt()}"
+            } else {
+                "$currencySymbol$price"
+            }
+        }
 
-/**
- * External link model
- */
-data class Link(
-    val title: String,
-    val url: String,
-    val type: LinkType
-)
-
-enum class LinkType {
-    ARTICLE,
-    VIDEO,
-    WEBSITE,
-    SOCIAL_MEDIA,
-    OTHER
+    /**
+     * First category name or empty string
+     */
+    val primaryCategory: String
+        get() = categories.firstOrNull()?.name ?: ""
 }
 
 /**
- * User's purchased tour
+ * Domain model representing a product Category
  */
-data class UserTour(
-    val tourId: String,
-    val userId: String,
-    val purchaseDate: Date,
-    val expiryDate: Date?,
-    val progress: TourProgress,
-    val lastAccessedDate: Date?
-)
-
-/**
- * Track user's progress in a tour
- */
-data class TourProgress(
-    val completedLocations: List<String>,
-    val currentLocationId: String?,
-    val percentComplete: Int
+data class Category(
+    val id: Int,
+    val name: String,
+    val slug: String,
+    val description: String = "",
+    val productCount: Int = 0,
+    val imageUrl: String? = null
 )

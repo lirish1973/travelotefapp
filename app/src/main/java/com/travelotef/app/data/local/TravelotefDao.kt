@@ -8,101 +8,75 @@ import kotlinx.coroutines.flow.Flow
  */
 @Dao
 interface TourDao {
-    
-    @Query("SELECT * FROM tours ORDER BY updatedAt DESC")
+
+    @Query("SELECT * FROM tours ORDER BY lastUpdated DESC")
     fun getAllTours(): Flow<List<TourEntity>>
-    
+
     @Query("SELECT * FROM tours WHERE id = :tourId")
-    suspend fun getTourById(tourId: String): TourEntity?
-    
-    @Query("SELECT * FROM tours WHERE category = :category ORDER BY updatedAt DESC")
-    fun getToursByCategory(category: String): Flow<List<TourEntity>>
-    
-    @Query("SELECT * FROM tours WHERE isAvailable = 1 ORDER BY rating DESC")
-    fun getAvailableTours(): Flow<List<TourEntity>>
-    
-    @Query("SELECT * FROM tours WHERE title LIKE '%' || :query || '%' OR description LIKE '%' || :query || '%'")
+    suspend fun getTourById(tourId: Int): TourEntity?
+
+    @Query("SELECT * FROM tours WHERE categoryIds LIKE '%' || :categoryId || '%' ORDER BY lastUpdated DESC")
+    fun getToursByCategory(categoryId: Int): Flow<List<TourEntity>>
+
+    @Query("SELECT * FROM tours WHERE name LIKE '%' || :query || '%' OR shortDescription LIKE '%' || :query || '%'")
     fun searchTours(query: String): Flow<List<TourEntity>>
-    
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(tours: List<TourEntity>)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTour(tour: TourEntity)
-    
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTours(tours: List<TourEntity>)
-    
-    @Update
-    suspend fun updateTour(tour: TourEntity)
-    
-    @Delete
-    suspend fun deleteTour(tour: TourEntity)
-    
+
     @Query("DELETE FROM tours")
-    suspend fun deleteAllTours()
-    
-    @Transaction
-    @Query("SELECT * FROM tours WHERE id = :tourId")
-    suspend fun getTourWithLocations(tourId: String): TourWithLocations?
+    suspend fun deleteAll()
+
+    @Query("SELECT COUNT(*) FROM tours")
+    suspend fun getCount(): Int
 }
 
 /**
- * Data Access Object for Locations
+ * Data Access Object for Categories
  */
 @Dao
-interface LocationDao {
-    
-    @Query("SELECT * FROM locations WHERE tourId = :tourId ORDER BY `order` ASC")
-    suspend fun getLocationsByTourId(tourId: String): List<LocationEntity>
-    
-    @Query("SELECT * FROM locations WHERE id = :locationId")
-    suspend fun getLocationById(locationId: String): LocationEntity?
-    
+interface CategoryDao {
+
+    @Query("SELECT * FROM categories WHERE productCount > 0 ORDER BY name ASC")
+    fun getAllCategories(): Flow<List<CategoryEntity>>
+
+    @Query("SELECT * FROM categories WHERE id = :categoryId")
+    suspend fun getCategoryById(categoryId: Int): CategoryEntity?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertLocation(location: LocationEntity)
-    
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertLocations(locations: List<LocationEntity>)
-    
-    @Delete
-    suspend fun deleteLocation(location: LocationEntity)
-    
-    @Query("DELETE FROM locations WHERE tourId = :tourId")
-    suspend fun deleteLocationsByTourId(tourId: String)
+    suspend fun insertAll(categories: List<CategoryEntity>)
+
+    @Query("DELETE FROM categories")
+    suspend fun deleteAll()
 }
 
 /**
- * Data Access Object for User Tours
+ * Data Access Object for Favorites
  */
 @Dao
-interface UserTourDao {
-    
-    @Query("SELECT * FROM user_tours WHERE userId = :userId ORDER BY purchaseDate DESC")
-    fun getUserTours(userId: String): Flow<List<UserTourEntity>>
-    
-    @Query("SELECT * FROM user_tours WHERE tourId = :tourId AND userId = :userId")
-    suspend fun getUserTour(tourId: String, userId: String): UserTourEntity?
-    
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertUserTour(userTour: UserTourEntity)
-    
-    @Update
-    suspend fun updateUserTour(userTour: UserTourEntity)
-    
-    @Delete
-    suspend fun deleteUserTour(userTour: UserTourEntity)
-}
+interface FavoriteDao {
 
-/**
- * Data Access Object for Sync Metadata
- */
-@Dao
-interface SyncMetadataDao {
-    
-    @Query("SELECT * FROM sync_metadata WHERE key = :key")
-    suspend fun getMetadata(key: String): SyncMetadataEntity?
-    
+    @Query("SELECT * FROM favorites ORDER BY addedAt DESC")
+    fun getAllFavorites(): Flow<List<FavoriteEntity>>
+
+    @Query("SELECT tourId FROM favorites")
+    fun getAllFavoriteIds(): Flow<List<Int>>
+
+    @Query("SELECT EXISTS(SELECT 1 FROM favorites WHERE tourId = :tourId)")
+    suspend fun isFavorite(tourId: Int): Boolean
+
+    @Query("SELECT EXISTS(SELECT 1 FROM favorites WHERE tourId = :tourId)")
+    fun isFavoriteFlow(tourId: Int): Flow<Boolean>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertMetadata(metadata: SyncMetadataEntity)
-    
-    @Query("DELETE FROM sync_metadata WHERE key = :key")
-    suspend fun deleteMetadata(key: String)
+    suspend fun insert(favorite: FavoriteEntity)
+
+    @Query("DELETE FROM favorites WHERE tourId = :tourId")
+    suspend fun delete(tourId: Int)
+
+    @Query("SELECT t.* FROM tours t INNER JOIN favorites f ON t.id = f.tourId ORDER BY f.addedAt DESC")
+    fun getFavoriteTours(): Flow<List<TourEntity>>
 }

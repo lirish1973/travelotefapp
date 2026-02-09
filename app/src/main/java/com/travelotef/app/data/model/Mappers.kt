@@ -1,193 +1,191 @@
 package com.travelotef.app.data.model
 
+import android.text.Html
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.travelotef.app.data.local.LocationEntity
+import com.travelotef.app.data.local.CategoryEntity
 import com.travelotef.app.data.local.TourEntity
-import com.travelotef.app.domain.model.*
-import java.text.SimpleDateFormat
-import java.util.*
+import com.travelotef.app.domain.model.Category
+import com.travelotef.app.domain.model.Tour
 
 /**
- * Mappers to convert between different model layers
+ * Mappers to convert between WooCommerce API models, Room entities, and Domain models
  */
 
 private val gson = Gson()
-private val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US).apply {
-    timeZone = TimeZone.getTimeZone("UTC")
-}
+
+// ==================== WcProduct -> Domain ====================
 
 /**
- * Convert API Tour to Domain Tour
+ * Convert WooCommerce Product to Domain Tour
  */
-fun ApiTour.toDomain(): Tour {
+fun WcProduct.toDomain(isFavorite: Boolean = false): Tour {
     return Tour(
         id = this.id,
-        title = this.title,
-        description = this.description,
-        price = this.price,
-        duration = this.duration,
-        coverImageUrl = this.imageUrl,
-        category = this.category,
-        locations = this.locations?.map { it.toDomain() } ?: emptyList(),
-        difficulty = parseDifficulty(this.difficulty),
-        rating = this.rating,
-        reviewsCount = this.reviewsCount,
-        isAvailable = this.isAvailable,
-        createdAt = parseDate(this.createdAt),
-        updatedAt = parseDate(this.updatedAt)
+        name = stripHtml(this.name),
+        permalink = this.permalink,
+        shortDescription = stripHtml(this.shortDescription),
+        description = stripHtml(this.description),
+        price = this.prices.price,
+        regularPrice = this.prices.regularPrice,
+        isOnSale = this.onSale,
+        currencySymbol = this.prices.currencySymbol,
+        thumbnailUrl = this.images.firstOrNull()?.thumbnail ?: "",
+        imageUrls = this.images.map { it.src },
+        categories = this.categories.map { it.toDomain() },
+        isInStock = this.isInStock,
+        isPurchasable = this.isPurchasable,
+        averageRating = this.averageRating.toFloatOrNull() ?: 0f,
+        reviewCount = this.reviewCount,
+        isFavorite = isFavorite
     )
 }
 
 /**
- * Convert API Location to Domain Location
+ * Convert WooCommerce Category Reference to Domain Category
  */
-fun ApiLocation.toDomain(): Location {
-    return Location(
+fun WcCategoryRef.toDomain(): Category {
+    return Category(
         id = this.id,
-        name = this.name,
-        description = this.description,
-        latitude = this.latitude,
-        longitude = this.longitude,
-        videoUrl = this.videoUrl,
-        images = this.images,
-        story = this.story,
-        links = this.links.map { it.toDomain() },
-        order = this.order,
-        estimatedDuration = this.estimatedDuration
+        name = stripHtml(this.name),
+        slug = this.slug
     )
 }
 
 /**
- * Convert API Link to Domain Link
+ * Convert Full WooCommerce Category to Domain Category
  */
-fun ApiLink.toDomain(): Link {
-    return Link(
-        title = this.title,
-        url = this.url,
-        type = parseLinkType(this.type)
+fun WcCategoryFull.toDomain(): Category {
+    return Category(
+        id = this.id,
+        name = stripHtml(this.name),
+        slug = this.slug,
+        description = stripHtml(this.description ?: ""),
+        productCount = this.count,
+        imageUrl = this.image?.src
     )
 }
 
+// ==================== WcProduct -> Entity ====================
+
 /**
- * Convert Domain Tour to Entity
+ * Convert WooCommerce Product to Room Entity
  */
-fun Tour.toEntity(): TourEntity {
+fun WcProduct.toEntity(): TourEntity {
     return TourEntity(
         id = this.id,
-        title = this.title,
+        name = stripHtml(this.name),
+        slug = this.slug,
+        permalink = this.permalink,
+        shortDescription = this.shortDescription,
         description = this.description,
-        price = this.price,
-        duration = this.duration,
-        coverImageUrl = this.coverImageUrl,
-        category = this.category,
-        difficulty = this.difficulty.name,
-        rating = this.rating,
-        reviewsCount = this.reviewsCount,
-        isAvailable = this.isAvailable,
-        createdAt = this.createdAt.time,
-        updatedAt = this.updatedAt.time,
-        isSynced = true,
-        lastSyncTime = System.currentTimeMillis()
+        price = this.prices.price,
+        regularPrice = this.prices.regularPrice,
+        salePrice = this.prices.salePrice,
+        currencySymbol = this.prices.currencySymbol,
+        priceHtml = this.priceHtml ?: "",
+        onSale = this.onSale,
+        averageRating = this.averageRating,
+        reviewCount = this.reviewCount,
+        thumbnailUrl = this.images.firstOrNull()?.thumbnail ?: "",
+        imageUrls = gson.toJson(this.images.map { it.src }),
+        categoryIds = gson.toJson(this.categories.map { it.id }),
+        categoryNames = gson.toJson(this.categories.map { stripHtml(it.name) }),
+        isPurchasable = this.isPurchasable,
+        isInStock = this.isInStock,
+        lastUpdated = System.currentTimeMillis()
     )
 }
 
 /**
- * Convert Domain Location to Entity
+ * Convert Full WooCommerce Category to Room Entity
  */
-fun Location.toEntity(tourId: String): LocationEntity {
-    return LocationEntity(
+fun WcCategoryFull.toEntity(): CategoryEntity {
+    return CategoryEntity(
         id = this.id,
-        tourId = tourId,
-        name = this.name,
-        description = this.description,
-        latitude = this.latitude,
-        longitude = this.longitude,
-        videoUrl = this.videoUrl,
-        images = gson.toJson(this.images),
-        story = this.story,
-        links = gson.toJson(this.links),
-        order = this.order,
-        estimatedDuration = this.estimatedDuration
+        name = stripHtml(this.name),
+        slug = this.slug,
+        description = stripHtml(this.description ?: ""),
+        parentId = this.parent,
+        productCount = this.count,
+        imageUrl = this.image?.src,
+        permalink = this.permalink ?: ""
     )
 }
 
+// ==================== Entity -> Domain ====================
+
 /**
- * Convert Entity to Domain Tour
+ * Convert Tour Entity to Domain Tour
  */
-fun TourEntity.toDomain(locations: List<Location> = emptyList()): Tour {
+fun TourEntity.toDomain(isFavorite: Boolean = false): Tour {
+    val imageList: List<String> = try {
+        gson.fromJson(this.imageUrls, object : TypeToken<List<String>>() {}.type)
+    } catch (e: Exception) {
+        emptyList()
+    }
+
+    val catIds: List<Int> = try {
+        gson.fromJson(this.categoryIds, object : TypeToken<List<Int>>() {}.type)
+    } catch (e: Exception) {
+        emptyList()
+    }
+
+    val catNames: List<String> = try {
+        gson.fromJson(this.categoryNames, object : TypeToken<List<String>>() {}.type)
+    } catch (e: Exception) {
+        emptyList()
+    }
+
+    val categories = catIds.zip(catNames).map { (id, name) ->
+        Category(id = id, name = name, slug = "")
+    }
+
     return Tour(
         id = this.id,
-        title = this.title,
-        description = this.description,
+        name = this.name,
+        permalink = this.permalink,
+        shortDescription = stripHtml(this.shortDescription),
+        description = stripHtml(this.description),
         price = this.price,
-        duration = this.duration,
-        coverImageUrl = this.coverImageUrl,
-        category = this.category,
-        locations = locations,
-        difficulty = TourDifficulty.valueOf(this.difficulty),
-        rating = this.rating,
-        reviewsCount = this.reviewsCount,
-        isAvailable = this.isAvailable,
-        createdAt = Date(this.createdAt),
-        updatedAt = Date(this.updatedAt)
+        regularPrice = this.regularPrice,
+        isOnSale = this.onSale,
+        currencySymbol = this.currencySymbol,
+        thumbnailUrl = this.thumbnailUrl,
+        imageUrls = imageList,
+        categories = categories,
+        isInStock = this.isInStock,
+        isPurchasable = this.isPurchasable,
+        averageRating = this.averageRating.toFloatOrNull() ?: 0f,
+        reviewCount = this.reviewCount,
+        isFavorite = isFavorite
     )
 }
 
 /**
- * Convert Entity to Domain Location
+ * Convert Category Entity to Domain Category
  */
-fun LocationEntity.toDomain(): Location {
-    val imagesList: List<String> = try {
-        gson.fromJson(this.images, object : TypeToken<List<String>>() {}.type)
-    } catch (e: Exception) {
-        emptyList()
-    }
-    
-    val linksList: List<Link> = try {
-        gson.fromJson(this.links, object : TypeToken<List<Link>>() {}.type)
-    } catch (e: Exception) {
-        emptyList()
-    }
-    
-    return Location(
+fun CategoryEntity.toDomain(): Category {
+    return Category(
         id = this.id,
         name = this.name,
+        slug = this.slug,
         description = this.description,
-        latitude = this.latitude,
-        longitude = this.longitude,
-        videoUrl = this.videoUrl,
-        images = imagesList,
-        story = this.story,
-        links = linksList,
-        order = this.order,
-        estimatedDuration = this.estimatedDuration
+        productCount = this.productCount,
+        imageUrl = this.imageUrl
     )
 }
 
+// ==================== Utility ====================
+
 /**
- * Helper functions
+ * Strip HTML tags from a string
  */
-private fun parseDifficulty(difficulty: String): TourDifficulty {
+fun stripHtml(html: String): String {
+    if (html.isBlank()) return ""
     return try {
-        TourDifficulty.valueOf(difficulty.uppercase())
+        Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY).toString().trim()
     } catch (e: Exception) {
-        TourDifficulty.MODERATE
-    }
-}
-
-private fun parseLinkType(type: String): LinkType {
-    return try {
-        LinkType.valueOf(type.uppercase())
-    } catch (e: Exception) {
-        LinkType.OTHER
-    }
-}
-
-private fun parseDate(dateString: String): Date {
-    return try {
-        dateFormat.parse(dateString) ?: Date()
-    } catch (e: Exception) {
-        Date()
+        html.replace(Regex("<[^>]*>"), "").trim()
     }
 }

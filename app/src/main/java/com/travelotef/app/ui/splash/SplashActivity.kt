@@ -12,20 +12,24 @@ import com.travelotef.app.R
 
 /**
  * Splash Screen Activity
- * Shows app logo and checks user authentication status
+ * Shows app logo, checks user authentication status,
+ * and navigates to the appropriate screen.
+ *
+ * All users go to MainActivity (guest browsing supported).
+ * Auth is optional - only needed for favorites sync across devices.
  */
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
 
-    private val splashDuration = 2500L // 2.5 seconds
+    private val splashDuration = 2000L // 2 seconds
     private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
-        
+
         auth = FirebaseAuth.getInstance()
-        
+
         // Navigate after delay
         Handler(Looper.getMainLooper()).postDelayed({
             navigateToNextScreen()
@@ -33,10 +37,14 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun navigateToNextScreen() {
-        val intent = Intent(this, MainActivity::class.java)
+        // All users go to MainActivity - guest browsing is supported
+        // Auth is optional for favorites/profile features
+        val intent = Intent(this, MainActivity::class.java).apply {
+            putExtra("isLoggedIn", auth.currentUser != null)
+        }
         startActivity(intent)
         finish()
-        
+
         // Add transition animation
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
     }

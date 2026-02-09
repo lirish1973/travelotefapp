@@ -23,13 +23,12 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    
+
     /**
-     * Base URL for TryIt API
-     * TODO: Replace with actual TryIt.co.il API endpoint
+     * Base URL for TryIt.co.il WooCommerce Store API
      */
-    private const val BASE_URL = "https://api.tryit.co.il/"
-    
+    private const val BASE_URL = "https://www.tryit.co.il/wp-json/wc/store/v1/"
+
     @Provides
     @Singleton
     fun provideGson(): Gson {
@@ -37,14 +36,14 @@ object AppModule {
             .setLenient()
             .create()
     }
-    
+
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
-        
+
         return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
             .connectTimeout(30, TimeUnit.SECONDS)
@@ -52,7 +51,7 @@ object AppModule {
             .writeTimeout(30, TimeUnit.SECONDS)
             .build()
     }
-    
+
     @Provides
     @Singleton
     fun provideRetrofit(gson: Gson, okHttpClient: OkHttpClient): Retrofit {
@@ -62,40 +61,34 @@ object AppModule {
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
     }
-    
+
     @Provides
     @Singleton
     fun provideTryItApiService(retrofit: Retrofit): TryItApiService {
         return retrofit.create(TryItApiService::class.java)
     }
-    
+
     @Provides
     @Singleton
     fun provideTravelotefDatabase(@ApplicationContext context: Context): TravelotefDatabase {
         return TravelotefDatabase.getInstance(context)
     }
-    
+
     @Provides
     @Singleton
     fun provideTourDao(database: TravelotefDatabase): TourDao {
         return database.tourDao()
     }
-    
+
     @Provides
     @Singleton
-    fun provideLocationDao(database: TravelotefDatabase): LocationDao {
-        return database.locationDao()
+    fun provideCategoryDao(database: TravelotefDatabase): CategoryDao {
+        return database.categoryDao()
     }
-    
+
     @Provides
     @Singleton
-    fun provideUserTourDao(database: TravelotefDatabase): UserTourDao {
-        return database.userTourDao()
-    }
-    
-    @Provides
-    @Singleton
-    fun provideSyncMetadataDao(database: TravelotefDatabase): SyncMetadataDao {
-        return database.syncMetadataDao()
+    fun provideFavoriteDao(database: TravelotefDatabase): FavoriteDao {
+        return database.favoriteDao()
     }
 }

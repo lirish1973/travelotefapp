@@ -4,10 +4,46 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/homeFragment">
 
-    <!-- Home Fragment - placeholder for now -->
+    <!-- Home Fragment -->
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.travelotef.app.ui.home.HomeFragment"
-        android:label="home_fragment" />
+        android:label="בית">
+
+        <action
+            android:id="@+id/action_home_to_detail"
+            app:destination="@id/tourDetailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <!-- Tour Detail Fragment -->
+    <fragment
+        android:id="@+id/tourDetailFragment"
+        android:name="com.travelotef.app.ui.detail.TourDetailFragment"
+        android:label="פרטי סיור">
+
+        <argument
+            android:name="tourId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </fragment>
+
+    <!-- My Tours (Favorites) Fragment -->
+    <fragment
+        android:id="@+id/myToursFragment"
+        android:name="com.travelotef.app.ui.mytours.MyToursFragment"
+        android:label="הסיורים שלי">
+
+        <action
+            android:id="@+id/action_myTours_to_detail"
+            app:destination="@id/tourDetailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
 
 </navigation>

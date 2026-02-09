@@ -5,9 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="16dp"
+    android:layout_margin="4dp"
     app:cardCornerRadius="16dp"
-    app:cardElevation="4dp">
+    app:cardElevation="4dp"
+    app:strokeWidth="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,30 +18,60 @@
         <ImageView
             android:id="@+id/ivTourImage"
             android:layout_width="0dp"
-            android:layout_height="200dp"
+            android:layout_height="160dp"
             android:scaleType="centerCrop"
             android:src="@android:drawable/ic_menu_gallery"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@android:drawable/ic_menu_gallery" />
+
+        <!-- Gradient Overlay -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@drawable/gradient_overlay"
+            app:layout_constraintBottom_toBottomOf="@id/ivTourImage"
+            app:layout_constraintEnd_toEndOf="@id/ivTourImage"
+            app:layout_constraintStart_toStartOf="@id/ivTourImage" />
 
         <!-- Favorite Button -->
         <ImageButton
             android:id="@+id/btnFavorite"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_margin="12dp"
-            android:background="@android:color/white"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/circle_white_background"
+            android:contentDescription="הוסף למועדפים"
+            android:padding="6dp"
             android:src="@android:drawable/btn_star_big_off"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Tour Details Container -->
+        <!-- Price Badge -->
+        <TextView
+            android:id="@+id/tvPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:background="@color/primary"
+            android:paddingStart="12dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="4dp"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/ivTourImage"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="₪120" />
+
+        <!-- Tour Details -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp"
+            android:padding="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ivTourImage">
@@ -50,50 +81,47 @@
                 android:id="@+id/tvTourTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="טיול בגליל העליון"
-                android:textColor="@color/text_primary"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                tools:text="טיול בגליל העליון" />
-
-            <!-- Tour Description -->
-            <TextView
-                android:id="@+id/tvTourDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:text="גלו את היופי של הגליל העליון..."
-                android:textColor="@color/text_secondary"
-                android:textSize="14sp"
-                tools:text="גלו את היופי של הגליל העליון במסלול מרהיב" />
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="סיור בעוטף עזה" />
 
-            <!-- Duration and Rating -->
+            <!-- Category -->
+            <TextView
+                android:id="@+id/tvCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/accent"
+                android:textSize="12sp"
+                tools:text="עוטף" />
+
+            <!-- Rating and Stock -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/tvDuration"
+                    android:id="@+id/tvRating"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:drawablePadding="4dp"
-                    android:text="⏱️ 3 שעות"
                     android:textColor="@color/text_secondary"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    tools:text="⭐ 4.8 (12)" />
 
                 <TextView
-                    android:id="@+id/tvRating"
+                    android:id="@+id/tvStock"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawablePadding="4dp"
-                    android:text="⭐ 4.8"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="12sp" />
+                    android:text="במלאי"
+                    android:textColor="@color/success"
+                    android:textSize="11sp" />
 
             </LinearLayout>
 

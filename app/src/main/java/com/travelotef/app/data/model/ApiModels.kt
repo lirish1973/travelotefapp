@@ -3,127 +3,188 @@ package com.travelotef.app.data.model
 import com.google.gson.annotations.SerializedName
 
 /**
- * API response model for TryIt.co.il tours
+ * WooCommerce Store API - Product model
+ * Matches the response from: /wp-json/wc/store/v1/products
  */
-data class ApiTourResponse(
-    @SerializedName("tours")
-    val tours: List<ApiTour>,
-    @SerializedName("total")
-    val total: Int,
-    @SerializedName("page")
-    val page: Int,
-    @SerializedName("pageSize")
-    val pageSize: Int
-)
-
-/**
- * API Tour model from TryIt
- */
-data class ApiTour(
+data class WcProduct(
     @SerializedName("id")
-    val id: String,
-    @SerializedName("title")
-    val title: String,
-    @SerializedName("description")
-    val description: String,
-    @SerializedName("price")
-    val price: Double,
-    @SerializedName("duration")
-    val duration: String,
-    @SerializedName("image_url")
-    val imageUrl: String,
-    @SerializedName("category")
-    val category: String,
-    @SerializedName("difficulty")
-    val difficulty: String,
-    @SerializedName("rating")
-    val rating: Double,
-    @SerializedName("reviews_count")
-    val reviewsCount: Int,
-    @SerializedName("available")
-    val isAvailable: Boolean,
-    @SerializedName("locations")
-    val locations: List<ApiLocation>?,
-    @SerializedName("created_at")
-    val createdAt: String,
-    @SerializedName("updated_at")
-    val updatedAt: String
-)
-
-/**
- * API Location model
- */
-data class ApiLocation(
-    @SerializedName("id")
-    val id: String,
+    val id: Int,
     @SerializedName("name")
     val name: String,
+    @SerializedName("slug")
+    val slug: String,
+    @SerializedName("type")
+    val type: String,
+    @SerializedName("permalink")
+    val permalink: String,
+    @SerializedName("short_description")
+    val shortDescription: String,
     @SerializedName("description")
     val description: String,
-    @SerializedName("lat")
-    val latitude: Double,
-    @SerializedName("lng")
-    val longitude: Double,
-    @SerializedName("video_url")
-    val videoUrl: String?,
+    @SerializedName("on_sale")
+    val onSale: Boolean,
+    @SerializedName("prices")
+    val prices: WcPrices,
+    @SerializedName("price_html")
+    val priceHtml: String?,
+    @SerializedName("average_rating")
+    val averageRating: String,
+    @SerializedName("review_count")
+    val reviewCount: Int,
     @SerializedName("images")
-    val images: List<String>,
-    @SerializedName("story")
-    val story: String,
-    @SerializedName("links")
-    val links: List<ApiLink>,
-    @SerializedName("order")
-    val order: Int,
-    @SerializedName("duration_minutes")
-    val estimatedDuration: Int
+    val images: List<WcImage>,
+    @SerializedName("categories")
+    val categories: List<WcCategoryRef>,
+    @SerializedName("tags")
+    val tags: List<WcTag>?,
+    @SerializedName("attributes")
+    val attributes: List<WcAttribute>?,
+    @SerializedName("variations")
+    val variations: List<WcVariation>?,
+    @SerializedName("is_purchasable")
+    val isPurchasable: Boolean,
+    @SerializedName("is_in_stock")
+    val isInStock: Boolean,
+    @SerializedName("add_to_cart")
+    val addToCart: WcAddToCart?
 )
 
 /**
- * API Link model
+ * Price information
  */
-data class ApiLink(
-    @SerializedName("title")
-    val title: String,
+data class WcPrices(
+    @SerializedName("price")
+    val price: String,
+    @SerializedName("regular_price")
+    val regularPrice: String,
+    @SerializedName("sale_price")
+    val salePrice: String,
+    @SerializedName("currency_code")
+    val currencyCode: String,
+    @SerializedName("currency_symbol")
+    val currencySymbol: String,
+    @SerializedName("currency_prefix")
+    val currencyPrefix: String?,
+    @SerializedName("currency_suffix")
+    val currencySuffix: String?
+)
+
+/**
+ * Product image
+ */
+data class WcImage(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("src")
+    val src: String,
+    @SerializedName("thumbnail")
+    val thumbnail: String,
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("alt")
+    val alt: String
+)
+
+/**
+ * Category reference within a product
+ */
+data class WcCategoryRef(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("slug")
+    val slug: String
+)
+
+/**
+ * Full category model from /products/categories endpoint
+ */
+data class WcCategoryFull(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("slug")
+    val slug: String,
+    @SerializedName("description")
+    val description: String?,
+    @SerializedName("parent")
+    val parent: Int,
+    @SerializedName("count")
+    val count: Int,
+    @SerializedName("image")
+    val image: WcImage?,
+    @SerializedName("permalink")
+    val permalink: String?
+)
+
+/**
+ * Product tag
+ */
+data class WcTag(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("slug")
+    val slug: String
+)
+
+/**
+ * Product attribute (e.g., date selection for tours)
+ */
+data class WcAttribute(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("has_variations")
+    val hasVariations: Boolean,
+    @SerializedName("terms")
+    val terms: List<WcTerm>?
+)
+
+/**
+ * Attribute term
+ */
+data class WcTerm(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("slug")
+    val slug: String
+)
+
+/**
+ * Product variation
+ */
+data class WcVariation(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("attributes")
+    val attributes: List<WcVariationAttribute>?
+)
+
+/**
+ * Variation attribute value
+ */
+data class WcVariationAttribute(
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("value")
+    val value: String
+)
+
+/**
+ * Add to cart info
+ */
+data class WcAddToCart(
+    @SerializedName("text")
+    val text: String?,
+    @SerializedName("description")
+    val description: String?,
     @SerializedName("url")
-    val url: String,
-    @SerializedName("type")
-    val type: String
-)
-
-/**
- * Generic API Response wrapper
- */
-data class ApiResponse<T>(
-    @SerializedName("success")
-    val success: Boolean,
-    @SerializedName("data")
-    val data: T?,
-    @SerializedName("message")
-    val message: String?,
-    @SerializedName("error")
-    val error: ApiError?
-)
-
-/**
- * API Error model
- */
-data class ApiError(
-    @SerializedName("code")
-    val code: String,
-    @SerializedName("message")
-    val message: String,
-    @SerializedName("details")
-    val details: Map<String, Any>?
-)
-
-/**
- * Sync status model
- */
-data class SyncStatus(
-    @SerializedName("last_sync")
-    val lastSync: String,
-    @SerializedName("tours_count")
-    val toursCount: Int,
-    @SerializedName("updates_available")
-    val updatesAvailable: Boolean
+    val url: String?
 )
