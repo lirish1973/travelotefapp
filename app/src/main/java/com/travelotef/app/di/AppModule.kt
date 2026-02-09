@@ -1,6 +1,7 @@
 package com.travelotef.app.di
 
 import android.content.Context
+import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.travelotef.app.data.api.TryItApiService
@@ -28,6 +29,12 @@ object AppModule {
      * Base URL for TryIt.co.il WooCommerce Store API
      */
     private const val BASE_URL = "https://www.tryit.co.il/wp-json/wc/store/v1/"
+
+    @Provides
+    @Singleton
+    fun provideFirebaseAuth(): FirebaseAuth {
+        return FirebaseAuth.getInstance()
+    }
 
     @Provides
     @Singleton
