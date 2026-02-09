@@ -46,8 +46,8 @@ object HtmlUtils {
     fun cleanDescription(html: String?): String {
         if (html.isNullOrBlank()) return ""
         return stripHtml(html)
-            .replace("\n+".toRegex(), "\n")
-            .replace("\s+".toRegex(), " ")
+            .replace("\\n+".toRegex(), "\n")
+            .replace("\\s+".toRegex(), " ")
             .trim()
     }
 }

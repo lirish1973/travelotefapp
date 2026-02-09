@@ -15,7 +15,7 @@ import com.travelotef.app.domain.model.Category
  * RecyclerView Adapter for category chips (horizontal list)
  */
 class CategoryAdapter(
-    private val onCategoryClick: (Category?) -> Unit
+    private val onCategoryClick: (Int?) -> Unit
 ) : ListAdapter<Category, CategoryAdapter.CategoryViewHolder>(CategoryDiffCallback()) {
 
     private var selectedCategoryId: Int? = null
