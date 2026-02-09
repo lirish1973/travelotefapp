@@ -33,7 +33,6 @@ object AppModule {
     @Singleton
     fun provideGson(): Gson {
         return GsonBuilder()
-            .setLenient()
             .create()
     }
 

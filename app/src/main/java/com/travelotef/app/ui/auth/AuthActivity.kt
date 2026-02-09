@@ -1,6 +1,7 @@
 package com.travelotef.app.ui.auth
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
@@ -35,6 +36,7 @@ class AuthActivity : AppCompatActivity() {
         }
         startActivity(intent)
         finish()
+        @Suppress("DEPRECATION")
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
     }
 }

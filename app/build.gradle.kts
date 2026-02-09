@@ -44,6 +44,12 @@ android {
     }
 }
 
+// Required for Hilt + KSP to resolve generated types correctly
+ksp {
+    arg("correctErrorTypes", "true")
+    arg("dagger.fastInit", "enabled")
+}
+
 dependencies {
     // Core Android
     implementation("androidx.core:core-ktx:1.15.0")
