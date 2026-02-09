@@ -3,7 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
     id("com.google.devtools.ksp") version "2.1.0-1.0.29"
-    id("com.google.dagger.hilt.android") version "2.57.1"
+    id("com.google.dagger.hilt.android") version "2.56.2"
 }
 
 android {
@@ -80,8 +80,8 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:21.2.0")
     
     // Hilt for Dependency Injection
-    implementation("com.google.dagger:hilt-android:2.57.1")
-    ksp("com.google.dagger:hilt-compiler:2.57.1")
+    implementation("com.google.dagger:hilt-android:2.56.2")
+    ksp("com.google.dagger:hilt-android-compiler:2.56.2")
     
     // Hilt WorkManager integration
     implementation("androidx.hilt:hilt-work:1.2.0")
